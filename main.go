@@ -193,6 +193,78 @@ func PrintTree(rb *RBNode){
 	}
 }
 
+//删除一个值
+func (t *RBTree)DeleteData(data int){
+	node := t.SearchData(t.Root,data)
+	if node != nil{
+		t.DeleteNode(node)
+	}
+}
+//查找一个值
+func (t *RBTree)SearchData(node *RBNode,data int) *RBNode{
+	if node == nil{
+		return node
+	}
+	if node.Data == data {
+		return node
+	} else if node.Data > data{
+		return t.SearchData(node.Left,data)
+	} else{
+		return t.SearchData(node.Right,data)
+	}
+}
+
+//删除一个节点
+func (t *RBTree)DeleteNode(n *RBNode){
+	//先找到继任节点
+	var j *RBNode  //继任节点
+	if n.Left!=nil && n.Right!=nil{
+		j = t.findMin(n.Right)
+		n.Data = j.Data
+		t.DeleteNode(j)
+		return
+	}else if n.Left==nil && n.Right == nil{
+		j = nil
+	}else if n.Right!=nil{
+		j= n.Right
+	}else{
+		j= n.Left
+	}
+
+	p := n.Parent
+	if p != nil {
+		if p.Left == n { //当前节点是左节点
+			p.Left = j
+		}else{//当前节点是右节点
+			p.Right = j
+		}
+		if j != nil {
+			j.Parent = p
+		}
+	}else{
+		t.Root = j
+	}
+}
+
+//查找一颗树的最小节点
+func(t *RBTree)findMin(n *RBNode)*RBNode{
+	if n == nil {
+		return n
+	}
+	for {
+		if n.Left == nil {
+			break
+		}
+		n = n.Left
+	}
+	return n
+}
+
+//删除后修正红黑树
+func DeleteFix(){
+	//todo
+}
+
 
 func main(){
 	//测试程序
